@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         新浪微博热搜榜关键词屏蔽
 // @namespace    http://tampermonkey.net/
-// @version      0.0.1
+// @version      0.0.2
 // @description  屏蔽微博热搜榜中tag为：剧集、综艺等明显买量条目,热搜广告,热搜关键词，可自定义标签及关键词
 // @author       QIXIUQX
 // @match        https://weibo.com/*
@@ -18,10 +18,10 @@ let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
 // 标签关键词列表
 let adLabelList = ["综艺", "艺人"];
 // 热搜title关键词列表
-let adTitleList = ["肖战"];
+let adTitleList = ["肖战", "Uzi"];
 // 热搜编号
 let hotIdx = 0;
-
+// 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
 
 window.onload = () => {
@@ -51,7 +51,7 @@ function isExistKeywords(adList, category) {
 }
 /**
  * 标题是否存在于要被过滤的关键词列表中
- * @param {Array} adList 过滤列表
+ * @param {Array} adTitleList 过滤列表
  * @param {string} title 分类
  * @returns {boolean} 需要被过滤返回true,不需要过滤返回false
  */
@@ -87,12 +87,12 @@ function getHotSearch() {
           </div>
         </div>
       </div>`;
-      data.forEach((hotItem, idx) => {
+      data.forEach((hotItem) => {
         if (
           hotItem.ad_type === undefined &&
           !isExistKeywords(adCategoryList, hotItem.category || "") &&
           !isExistKeywords(adLabelList, hotItem.flag_desc || "") &&
-          !isExistKeywordsFromTitle(adTitleList,hotItem.note)
+          !isExistKeywordsFromTitle(adTitleList, hotItem.note)
         ) {
           hotIdx++;
 
@@ -124,9 +124,11 @@ function getHotSearch() {
                   )}">${hotIdx}</span>
                   <a href="https://s.weibo.com/weibo?q=%23${
                     hotItem.word
-                  }%23" class="ad-hot-topic-tit" target="_blank">${hotItem.note}</a>
+                  }%23" class="ad-hot-topic-tit" target="_blank">${
+            hotItem.note
+          }</a>
                   <span class="ad-hot-topic-num">
-                    <span>阅读量</span>
+                    <span>搜索量</span>
                     <span>${hotItem.num}</span>
                   </span>
                 </div>
@@ -138,15 +140,17 @@ function getHotSearch() {
               </div>
             </div>
             `;
-        }else{
-          console.log('被屏蔽:',hotItem);
+        } else {
+          console.log("被屏蔽:", hotItem);
         }
       });
-
+      //侧边栏插入热搜
       $(".wbpro-side-main").html(asideHotSearch);
+      // 热搜页侧边栏
       $(".wbpro-side-main>div:first-child div[class*='wbpro-side-card']").html(
         asideHotSearch
       );
+      // 热搜列表
       $("#scroller").html(primaryHotSearchStr);
     },
     error: function (jqXHR, textStatus, errorThrown) {},
@@ -212,11 +216,10 @@ function addHeadLink() {
 /**
  *
  * 添加css样式方法，脚本的所有css 都将在这里定义
- * @returns {string} css样式字符串
+ * @returns {HTMLStyleElement} css样式字符串
  */
 function addElStyle() {
   let style = document.createElement("style");
-  style.type = "text/css";
   style.innerHTML = `
   * {
   margin: 0;
