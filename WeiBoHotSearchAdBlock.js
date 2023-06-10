@@ -44,7 +44,10 @@ function initialPage() {
  */
 function changeRankMorePath() {
   if (getCurrentPageUrl().indexOf(hotDetailPageUrl) !== -1) {
-    $(".rank-more").attr("href", "https://weibo.com/hot/search");
+    $(".rank-more").attr({
+      href: "https://weibo.com/hot/search",
+      target: "_self",
+    });
   }
 }
 
