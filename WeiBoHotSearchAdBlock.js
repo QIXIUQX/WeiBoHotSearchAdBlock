@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         新浪微博热搜榜关键词屏蔽
 // @namespace    http://tampermonkey.net/
-// @version      0.0.2
+// @version      0.0.3
 // @description  屏蔽微博热搜榜中tag为：剧集、综艺等明显买量条目,热搜广告,热搜关键词，可自定义标签及关键词
 // @author       QIXIUQX
 // @match        https://weibo.com/*
@@ -18,11 +18,13 @@ let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
 // 标签关键词列表
 let adLabelList = ["综艺", "艺人"];
 // 热搜title关键词列表
-let adTitleList = ["肖战", "Uzi"];
+let adTitleList = ["肖战"];
 // 热搜编号
 let hotIdx = 0;
 // 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
+// 热搜详情页面地址
+let hotDetailPageUrl = "https://s.weibo.com/weibo?q=";
 
 window.onload = () => {
   initialPage();
@@ -34,6 +36,16 @@ window.onload = () => {
 function initialPage() {
   addHeadLink();
   getHotSearch();
+  changeRankMorePath();
+}
+
+/**
+ * 改变页面中查看完整热搜榜单的跳转地址
+ */
+function changeRankMorePath() {
+  if (getCurrentPageUrl().indexOf(hotDetailPageUrl) !== -1) {
+    $(".rank-more").attr("href", "https://weibo.com/hot/search");
+  }
 }
 
 /**
@@ -155,6 +167,14 @@ function getHotSearch() {
     },
     error: function (jqXHR, textStatus, errorThrown) {},
   });
+}
+
+/**
+ * 获取当前页面的url地址
+ * @returns {string} 当前页面的url地址
+ */
+function getCurrentPageUrl() {
+  return location.href;
 }
 
 /**
