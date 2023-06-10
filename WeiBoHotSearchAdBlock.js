@@ -94,14 +94,7 @@ function getHotSearch() {
     success: function (data) {
       data = data.data.realtime;
       let primaryHotSearchStr = "";
-      let asideHotSearch = `
-      <div class="ad-hot-search-wrap">
-        <div class="ad-hot-search-item" style="padding: 6px 10px;">
-          <div class="ad-item-content">
-            <a href="https://weibo.com/hot/search" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:18px;font-weight: 700;">查看完整热搜</a>
-          </div>
-        </div>
-      </div>`;
+
       data.forEach((hotItem) => {
         if (
           hotItem.ad_type === undefined &&
@@ -110,25 +103,6 @@ function getHotSearch() {
           !isExistKeywordsFromTitle(adTitleList, hotItem.note)
         ) {
           hotIdx++;
-
-          if (hotIdx <= 10) {
-            asideHotSearch += `
-            <div class="ad-hot-search-wrap">
-              <div class="ad-hot-search-item" style="padding: 6px 10px;">
-                <div class="ad-item-content">
-                  <span class="ad-hot-topic-idx ${getClassName(
-                    hotIdx
-                  )}">${hotIdx}</span>
-                  <a href="https://s.weibo.com/weibo?q=%23${
-                    hotItem.word
-                  }%23" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:14px;font-weight: 400;">${
-              hotItem.note
-            }</a>
-                </div>
-              </div>
-            </div>
-            `;
-          }
 
           primaryHotSearchStr += `
             <div class="ad-hot-search-wrap">
@@ -159,17 +133,61 @@ function getHotSearch() {
           console.log("被屏蔽:", hotItem);
         }
       });
-      //侧边栏插入热搜
-      $(".wbpro-side-main").html(asideHotSearch);
-      // 热搜页侧边栏
-      $(".wbpro-side-main>div:first-child div[class*='wbpro-side-card']").html(
-        asideHotSearch
-      );
+      generateSideStr(data);
       // 热搜列表
       $("#scroller").html(primaryHotSearchStr);
     },
     error: function (jqXHR, textStatus, errorThrown) {},
   });
+}
+/**
+ * 生成热搜的侧边栏数据
+ * @param {Array} data 热搜数组
+ */
+function generateSideStr(data) {
+  let hotIdx = 0;
+  let asideHotSearch = `
+  <div class="ad-hot-search-wrap">
+    <div class="ad-hot-search-item" style="padding: 6px 10px;">
+      <div class="ad-item-content">
+        <a href="https://weibo.com/hot/search" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:18px;font-weight: 700;">查看完整热搜</a>
+      </div>
+    </div>
+  </div>`;
+  data.forEach((hotItem) => {
+    if (
+      hotItem.ad_type === undefined &&
+      !isExistKeywords(adCategoryList, hotItem.category || "") &&
+      !isExistKeywords(adLabelList, hotItem.flag_desc || "") &&
+      !isExistKeywordsFromTitle(adTitleList, hotItem.note)
+    ) {
+      if (hotIdx < 10) {
+        hotIdx++;
+        asideHotSearch += `
+          <div class="ad-hot-search-wrap">
+            <div class="ad-hot-search-item" style="padding: 6px 10px;">
+              <div class="ad-item-content">
+                <span class="ad-hot-topic-idx ${getClassName(
+                  hotIdx
+                )}">${hotIdx}</span>
+                <a href="https://s.weibo.com/weibo?q=%23${
+                  hotItem.word
+                }%23" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:14px;font-weight: 400;">${
+          hotItem.note
+        }</a>
+              </div>
+            </div>
+          </div>
+          `;
+      }
+    }
+  });
+  //侧边栏插入热搜
+  $(".wbpro-side-main").html(asideHotSearch);
+  // 热搜页侧边栏
+  $(".wbpro-side-main>div:first-child div[class*='wbpro-side-card']").html(
+    asideHotSearch
+  );
 }
 
 /**
