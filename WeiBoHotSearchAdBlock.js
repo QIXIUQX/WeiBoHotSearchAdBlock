@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         新浪微博热搜榜关键词屏蔽
 // @namespace    http://tampermonkey.net/
-// @version      0.0.3
+// @version      0.0.4
 // @description  屏蔽微博热搜榜中tag为：剧集、综艺等明显买量条目,热搜广告,热搜关键词，可自定义标签及关键词
 // @author       QIXIUQX
 // @match        https://weibo.com/*
@@ -19,8 +19,6 @@ let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
 let adLabelList = ["综艺", "艺人"];
 // 热搜title关键词列表
 let adTitleList = ["肖战"];
-// 热搜编号
-let hotIdx = 0;
 // 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
 // 热搜详情页面地址
@@ -93,53 +91,60 @@ function getHotSearch() {
     dataType: "json",
     success: function (data) {
       data = data.data.realtime;
-      let primaryHotSearchStr = "";
 
-      data.forEach((hotItem) => {
-        if (
-          hotItem.ad_type === undefined &&
-          !isExistKeywords(adCategoryList, hotItem.category || "") &&
-          !isExistKeywords(adLabelList, hotItem.flag_desc || "") &&
-          !isExistKeywordsFromTitle(adTitleList, hotItem.note)
-        ) {
-          hotIdx++;
-
-          primaryHotSearchStr += `
-            <div class="ad-hot-search-wrap">
-              <div class="ad-hot-search-item">
-                <div class="ad-item-content">
-                  <span class="ad-hot-topic-idx ${getClassName(
-                    hotIdx
-                  )}">${hotIdx}</span>
-                  <a href="https://s.weibo.com/weibo?q=%23${
-                    hotItem.word
-                  }%23" class="ad-hot-topic-tit" target="_blank">${
-            hotItem.note
-          }</a>
-                  <span class="ad-hot-topic-num">
-                    <span>搜索量</span>
-                    <span>${hotItem.num}</span>
-                  </span>
-                </div>
-                <div class="ad-item-type-label">
-                  ${generateHotSearchICONDescStr(hotItem)}
-                  ${generateHotSearchCategoryStr(hotItem)}
-                  ${generateHotSearchFlagStr(hotItem)}
-                </div>
-              </div>
-            </div>
-            `;
-        } else {
-          console.log("被屏蔽:", hotItem);
-        }
-      });
       generateSideStr(data);
+      generatePrimaryStr(data);
       // 热搜列表
-      $("#scroller").html(primaryHotSearchStr);
     },
     error: function (jqXHR, textStatus, errorThrown) {},
   });
 }
+
+/**
+ * 生成热搜的主要页面数据
+ * @param data {Array} 热搜数据
+ */
+function generatePrimaryStr(data) {
+  let hotIdx = 0;
+  let primaryHotSearchStr = "";
+  data.forEach((hotItem) => {
+    if (
+      hotItem.ad_type === undefined &&
+      !isExistKeywords(adCategoryList, hotItem.category || "") &&
+      !isExistKeywords(adLabelList, hotItem.flag_desc || "") &&
+      !isExistKeywordsFromTitle(adTitleList, hotItem.note)
+    ) {
+      hotIdx++;
+      primaryHotSearchStr += `
+        <div class="ad-hot-search-wrap">
+          <div class="ad-hot-search-item">
+            <div class="ad-item-content">
+              <span class="ad-hot-topic-idx ${getClassName(
+                hotIdx
+              )}">${hotIdx}</span>
+              <a href="https://s.weibo.com/weibo?q=%23${
+                hotItem.word
+              }%23" class="ad-hot-topic-tit" target="_blank">${hotItem.note}</a>
+              <span class="ad-hot-topic-num">
+                <span>搜索量</span>
+                <span>${hotItem.num}</span>
+              </span>
+            </div>
+            <div class="ad-item-type-label">
+              ${generateHotSearchICONDescStr(hotItem)}
+              ${generateHotSearchCategoryStr(hotItem)}
+              ${generateHotSearchFlagStr(hotItem)}
+            </div>
+          </div>
+        </div>
+        `;
+    } else {
+      console.log("被屏蔽:", hotItem);
+    }
+  });
+  $("#scroller").html(primaryHotSearchStr);
+}
+
 /**
  * 生成热搜的侧边栏数据
  * @param {Array} data 热搜数组
