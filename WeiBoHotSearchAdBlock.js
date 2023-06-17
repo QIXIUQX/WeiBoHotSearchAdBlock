@@ -16,9 +16,9 @@
 // 分类关键词列表
 let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
 // 标签关键词列表
-let adLabelList = ["综艺", "艺人"];
+let adLabelList = ["综艺", "艺人","盛典","迪丽热巴"];
 // 热搜title关键词列表
-let adTitleList = ["肖战"];
+let adTitleList = ["肖战","王一博","杜江"];
 // 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
 // 热搜详情页面地址
@@ -119,12 +119,8 @@ function generatePrimaryStr(data) {
         <div class="ad-hot-search-wrap">
           <div class="ad-hot-search-item">
             <div class="ad-item-content">
-              <span class="ad-hot-topic-idx ${getClassName(
-                hotIdx
-              )}">${hotIdx}</span>
-              <a href="https://s.weibo.com/weibo?q=%23${
-                hotItem.word
-              }%23" class="ad-hot-topic-tit" target="_blank">${hotItem.note}</a>
+              <span class="ad-hot-topic-idx ${getClassName(hotIdx)}">${hotIdx}</span>
+              <a href="https://s.weibo.com/weibo?q=%23${hotItem.word}%23" class="ad-hot-topic-tit" target="_blank">${hotItem.note}</a>
               <span class="ad-hot-topic-num">
                 <span>搜索量</span>
                 <span>${hotItem.num}</span>
@@ -172,14 +168,10 @@ function generateSideStr(data) {
           <div class="ad-hot-search-wrap">
             <div class="ad-hot-search-item" style="padding: 6px 10px;">
               <div class="ad-item-content">
-                <span class="ad-hot-topic-idx ${getClassName(
-                  hotIdx
-                )}">${hotIdx}</span>
+                <span class="ad-hot-topic-idx ${getClassName(hotIdx)}">${hotIdx}</span>
                 <a href="https://s.weibo.com/weibo?q=%23${
                   hotItem.word
-                }%23" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:14px;font-weight: 400;">${
-          hotItem.note
-        }</a>
+                }%23" class="ad-hot-topic-tit" target="_blank" style="margin-right:0;font-size:14px;font-weight: 400;">${hotItem.note}</a>
               </div>
             </div>
           </div>
@@ -190,9 +182,7 @@ function generateSideStr(data) {
   //侧边栏插入热搜
   $(".wbpro-side-main").html(asideHotSearch);
   // 热搜页侧边栏
-  $(".wbpro-side-main>div:first-child div[class*='wbpro-side-card']").html(
-    asideHotSearch
-  );
+  $(".wbpro-side-main>div:first-child div[class*='wbpro-side-card']").html(asideHotSearch);
 }
 
 /**
