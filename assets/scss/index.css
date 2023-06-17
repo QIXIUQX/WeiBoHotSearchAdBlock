@@ -22,3 +22,23 @@ img {
 table {
   border-collapse: collapse;
   border-spacing: 0; }
+
+.x-ad-btn-setting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translate(0%, -50%);
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  background-color: #4FC3F7;
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  color: #fff; }

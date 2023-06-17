@@ -1,23 +1,48 @@
 <!DOCTYPE html>
 <html lang="zh_CN">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <!-- 禁用浏览器缩放功能-->
-    <meta name="viewport"
-          content="width=device-width, user-scalable=0, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
-    <meta name="renderer" content="webkit|ie-comp|ie-stand">
-    <!-- 强制Chromium内核，作用于360浏览器、QQ浏览器等国产双核浏览器 -->
-    <meta name="renderer" content="webkit"/>
-    <!-- 强制Chromium内核，作用于其他双核浏览器 -->
-    <meta name="force-rendering" content="webkit"/>
-    <!-- 如果有安装 Google Chrome Frame 插件则强制为Chromium内核，否则强制本机支持的最高版本IE内核，作用于IE浏览器 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
-    <link rel="stylesheet" href="./assets/scss/index.css"/>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <!-- 禁用浏览器缩放功能-->
+  <meta name="viewport"
+        content="width=device-width, user-scalable=0, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">
+  <!-- 强制Chromium内核，作用于360浏览器、QQ浏览器等国产双核浏览器 -->
+  <meta name="renderer" content="webkit"/>
+  <!-- 强制Chromium内核，作用于其他双核浏览器 -->
+  <meta name="force-rendering" content="webkit"/>
+  <!-- 如果有安装 Google Chrome Frame 插件则强制为Chromium内核，否则强制本机支持的最高版本IE内核，作用于IE浏览器 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <link rel="stylesheet" href="./assets/scss/index.css"/>
+  <script src="assets/js/jquery-1.11.0.min.js"></script>
 </head>
 <body>
-<div id="app">
+  <div class="x-ad-btn-setting">热</div>
+<script>
+  window.onload = () => {
+    initModalBox()
+  }
 
-</div>
+  /**
+   * 拖动模态框
+   */
+  function initModalBox() {
+    //拖动功能
+    let modalBox = document.querySelector(".x-ad-btn-setting");
+    modalBox.addEventListener("mousedown", function (e) {  //鼠标按下的时候，得到鼠标在盒子里面的坐标
+      let x = e.pageX - modalBox.offsetLeft;
+      let y = e.pageY - modalBox.offsetTop;
+      document.addEventListener("mousemove", move);  //鼠标移动的时候，得到模态框的坐标
+      function move(e) {
+        modalBox.style.left = e.pageX - x + "px";
+        modalBox.style.top = e.pageY - y + "px";
+      }
+
+      document.addEventListener("mouseup", function () {  //鼠标弹起的时候，解除鼠标移动事件
+        document.removeEventListener("mousemove", move);
+      })
+    })
+  }
+</script>
 </body>
 </html>

@@ -16,9 +16,9 @@
 // 分类关键词列表
 let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
 // 标签关键词列表
-let adLabelList = ["综艺", "艺人","盛典","迪丽热巴"];
+let adLabelList = ["综艺", "艺人", "盛典", "迪丽热巴"];
 // 热搜title关键词列表
-let adTitleList = ["肖战","王一博","杜江"];
+let adTitleList = ["肖战", "王一博", "杜江"];
 // 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
 // 热搜详情页面地址
@@ -33,8 +33,10 @@ window.onload = () => {
  */
 function initialPage() {
   addHeadLink();
+  generateHotSearchSettingBtn()
   getHotSearch();
   changeRankMorePath();
+  initModalBox()
 }
 
 /**
@@ -239,6 +241,37 @@ function getClassName(hotIdx) {
   return hotIdx > 3 ? "" : classList[hotIdx];
 }
 
+/*******热搜屏蔽功能设置按钮 *******/
+
+/**
+ * 生成热搜设置按钮
+ */
+function generateHotSearchSettingBtn() {
+  $("body").append(`<div class="x-ad-btn-setting">热</div>`)
+}
+/**
+ * 拖动模态框
+ */
+function initModalBox() {
+  //拖动功能
+  let modalBox = document.querySelector(".x-ad-btn-setting");
+  modalBox.addEventListener("mousedown", function (e) {
+    //鼠标按下的时候，得到鼠标在盒子里面的坐标
+    let x = e.pageX - modalBox.offsetLeft;
+    let y = e.pageY - modalBox.offsetTop;
+    document.addEventListener("mousemove", move); //鼠标移动的时候，得到模态框的坐标
+    function move(e) {
+      modalBox.style.left = e.pageX - x + "px";
+      modalBox.style.top = e.pageY - y + "px";
+    }
+
+    document.addEventListener("mouseup", function () {
+      //鼠标弹起的时候，解除鼠标移动事件
+      document.removeEventListener("mousemove", move);
+    });
+  });
+}
+
 /*******添加样式到页面中 *******/
 /**
  *添加head中的style标签
@@ -367,6 +400,28 @@ table {
   -ms-user-select: none;
   -webkit-user-select: none;
 }
+
+.x-ad-btn-setting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translate(0%, -50%);
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  background-color: #4FC3F7;
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  color: #fff;
+}
+
   `;
   return style;
 }
