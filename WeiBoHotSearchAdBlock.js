@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         新浪微博热搜榜关键词屏蔽
 // @namespace    http://tampermonkey.net/
-// @version      0.0.4
+// @version      0.0.5
 // @description  屏蔽微博热搜榜中tag为：剧集、综艺等明显买量条目,热搜广告,热搜关键词，可自定义标签及关键词
 // @author       QIXIUQX
 // @match        https://weibo.com/*
@@ -14,11 +14,11 @@
 //
 
 // 分类关键词列表
-let adCategoryList = ["影视", "艺人", "音乐", "综艺"];
+let adCategoryList = ["影视", "艺人", "音乐", "综艺","作品衍生"];
 // 标签关键词列表
-let adLabelList = ["综艺", "艺人","盛典","迪丽热巴"];
+let adLabelList = ["综艺", "艺人", "盛典", "迪丽热巴"];
 // 热搜title关键词列表
-let adTitleList = ["肖战","王一博","杜江"];
+let adTitleList = ["肖战", "王一博", "杜江"];
 // 热门样式类名
 let classList = ["ad-rank1", "ad-rank2", "ad-rank3"];
 // 热搜详情页面地址
@@ -138,7 +138,9 @@ function generatePrimaryStr(data) {
       console.log("被屏蔽:", hotItem);
     }
   });
-  $("#scroller").html(primaryHotSearchStr);
+  if (getCurrentPageUrl().indexOf(`https://weibo.com/hot`) !== -1) {
+    $("#scroller").html(primaryHotSearchStr);
+  }
 }
 
 /**
